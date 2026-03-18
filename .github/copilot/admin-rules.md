@@ -132,6 +132,7 @@ Ví dụ:
 
 ## Authorization
 
+* Admin Auth dùng Session (Laravel default)
 * Dùng middleware hoặc policy
 * Ví dụ:
 
@@ -186,3 +187,8 @@ Copilot PHẢI:
 * Có validation error
 * Có pagination
 * Code phải clean, dễ đọc
+
+## Security - XSS
+
+- Luôn dùng {{ }} để escape
+- ❌ Không dùng {!! !!} trừ khi cần thiết

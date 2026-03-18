@@ -160,6 +160,7 @@ Không cho phép:
 * Dùng eager loading khi cần
 * Tránh N+1 query
 * Dùng cache cho dữ liệu đọc nhiều
+* API Auth dùng Sanctum
 
 ---
 
