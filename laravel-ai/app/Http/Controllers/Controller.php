@@ -11,7 +11,7 @@ abstract class Controller
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'data' => $data,
+            'data' => empty($data) ? new \stdClass() : $data,
         ], $status);
     }
 

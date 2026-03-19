@@ -40,6 +40,20 @@ class RoleService
     }
 
     /**
+     * @return Collection<int, Role>
+     */
+    public function allForForm(): Collection
+    {
+        return Cache::remember(
+            'roles:all',
+            now()->addHour(),
+            static fn (): Collection => Role::query()
+                ->orderBy('display_name')
+                ->get(),
+        );
+    }
+
+    /**
      * @return Collection<int, Permission>
      */
     public function allPermissionsForForm(): Collection
@@ -55,7 +69,7 @@ class RoleService
 
     public function create(RoleData $roleData): Role
     {
-        return DB::transaction(function () use ($roleData): Role {
+        $role = DB::transaction(function () use ($roleData): Role {
             $role = Role::query()->create([
                 ...$roleData->toPayload(),
                 'is_system' => false,
@@ -65,6 +79,10 @@ class RoleService
 
             return $role->refresh();
         });
+
+        Cache::forget('roles:all');
+
+        return $role;
     }
 
     public function update(Role $role, RoleData $roleData): Role
@@ -88,6 +106,10 @@ class RoleService
 
             return $role->refresh();
         });
+
+        Cache::forget('roles:all');
+
+        return $role;
     }
 
     public function delete(Role $role): void
@@ -104,5 +126,7 @@ class RoleService
             $role->permissions()->detach();
             $role->delete();
         });
+
+        Cache::forget('roles:all');
     }
 }

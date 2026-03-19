@@ -9,8 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\User\IndexUserRequest;
 use App\Http\Requests\Admin\User\StoreUserRequest;
 use App\Http\Requests\Admin\User\UpdateUserRequest;
-use App\Models\Role;
 use App\Models\User;
+use App\Services\Access\RoleService;
 use App\Services\User\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -19,21 +19,21 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(IndexUserRequest $request, UserService $userService): View
+    public function index(IndexUserRequest $request, UserService $userService, RoleService $roleService): View
     {
         $queryData = UserQueryData::fromArray($request->validated());
 
         return view('admin.users.index', [
             'users' => $userService->paginate($queryData),
             'filters' => $queryData->toArray(),
-            'roles' => Role::query()->orderBy('display_name')->get(),
+            'roles' => $roleService->allForForm(),
         ]);
     }
 
-    public function create(): View
+    public function create(RoleService $roleService): View
     {
         return view('admin.users.create', [
-            'roles' => Role::query()->orderBy('display_name')->get(),
+            'roles' => $roleService->allForForm(),
         ]);
     }
 
@@ -53,11 +53,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit(User $user, UserService $userService): View
+    public function edit(User $user, UserService $userService, RoleService $roleService): View
     {
         return view('admin.users.edit', [
             'user' => $user,
-            'roles' => Role::query()->orderBy('display_name')->get(),
+            'roles' => $roleService->allForForm(),
             'isLastAdmin' => $userService->isLastAdmin($user),
         ]);
     }

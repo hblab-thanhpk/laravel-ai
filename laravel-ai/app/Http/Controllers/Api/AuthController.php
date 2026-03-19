@@ -37,7 +37,9 @@ class AuthController extends Controller
 
     public function logout(Request $request, AuthService $authService): JsonResponse
     {
-        $authService->logout($request->user());
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $authService->logout($user);
 
         return $this->successResponse('Đăng xuất thành công.');
     }
