@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class UserService
@@ -54,6 +55,7 @@ class UserService
 
             $user->fill($userData->toUpdatePayload());
             $user->save();
+            $user->flushPermissionsCache();
 
             return $user->refresh();
         });
@@ -64,6 +66,7 @@ class UserService
         DB::transaction(function () use ($user): void {
             $this->guardLastAdminBeforeDelete($user);
 
+            $user->flushPermissionsCache();
             $user->delete();
         });
     }

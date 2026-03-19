@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable(['name', 'email', 'password', 'is_admin', 'role_id'])]
@@ -60,15 +61,7 @@ class User extends Authenticatable
 
     public function hasPermission(string $permissionName): bool
     {
-        $role = $this->relationLoaded('role')
-            ? $this->getRelation('role')
-            : $this->role()->with('permissions')->first();
-
-        if ($role === null) {
-            return false;
-        }
-
-        return $role->permissions()->where('name', $permissionName)->exists();
+        return in_array($permissionName, $this->getCachedPermissions(), true);
     }
 
     public function canAccessAdminPanel(): bool
@@ -77,6 +70,27 @@ class User extends Authenticatable
             return false;
         }
 
-        return $this->role()->whereHas('permissions')->exists();
+        return count($this->getCachedPermissions()) > 0;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getCachedPermissions(): array
+    {
+        return Cache::remember(
+            "user:{$this->id}:permissions",
+            now()->addMinutes(10),
+            function (): array {
+                $role = $this->role()->with('permissions')->first();
+
+                return $role?->permissions->pluck('name')->all() ?? [];
+            },
+        );
+    }
+
+    public function flushPermissionsCache(): void
+    {
+        Cache::forget("user:{$this->id}:permissions");
     }
 }

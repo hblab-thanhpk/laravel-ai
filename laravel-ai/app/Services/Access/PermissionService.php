@@ -8,6 +8,7 @@ use App\Exceptions\CannotDeletePermissionException;
 use App\Models\Permission;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class PermissionService
@@ -38,10 +39,14 @@ class PermissionService
     public function create(PermissionData $permissionData): Permission
     {
         return DB::transaction(function () use ($permissionData): Permission {
-            return Permission::query()->create([
+            $permission = Permission::query()->create([
                 ...$permissionData->toPayload(),
                 'is_system' => false,
             ]);
+
+            Cache::forget('permissions:all');
+
+            return $permission;
         });
     }
 
@@ -56,6 +61,8 @@ class PermissionService
 
             $permission->fill($payload);
             $permission->save();
+
+            Cache::forget('permissions:all');
 
             return $permission->refresh();
         });
@@ -73,6 +80,8 @@ class PermissionService
             }
 
             $permission->delete();
+
+            Cache::forget('permissions:all');
         });
     }
 }

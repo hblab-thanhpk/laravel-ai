@@ -8,29 +8,33 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Product\IndexProductRequest;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
-use App\Models\Category;
 use App\Models\Product;
+use App\Services\Catalog\CategoryService;
 use App\Services\Catalog\ProductService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index(IndexProductRequest $request, ProductService $productService): View
+    public function index(
+        IndexProductRequest $request,
+        ProductService $productService,
+        CategoryService $categoryService,
+    ): View
     {
         $queryData = ProductQueryData::fromArray($request->validated());
 
         return view('admin.products.index', [
             'products' => $productService->paginate($queryData),
             'filters' => $queryData->toArray(),
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $categoryService->allActiveForSelect(),
         ]);
     }
 
-    public function create(): View
+    public function create(CategoryService $categoryService): View
     {
         return view('admin.products.create', [
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $categoryService->allActiveForSelect(),
         ]);
     }
 
@@ -56,11 +60,11 @@ class ProductController extends Controller
         ]);
     }
 
-    public function edit(Product $product): View
+    public function edit(Product $product, CategoryService $categoryService): View
     {
         return view('admin.products.edit', [
             'product' => $product->load('category'),
-            'categories' => Category::query()->orderBy('name')->get(),
+            'categories' => $categoryService->allActiveForSelect(),
         ]);
     }
 

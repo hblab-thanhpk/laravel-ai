@@ -7,6 +7,8 @@ use App\DTOs\Access\RoleQueryData;
 use App\Exceptions\CannotDeleteRoleException;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,9 +44,13 @@ class RoleService
      */
     public function allPermissionsForForm(): Collection
     {
-        return Permission::query()
-            ->orderBy('display_name')
-            ->get();
+        return Cache::remember(
+            'permissions:all',
+            now()->addHour(),
+            static fn (): Collection => Permission::query()
+                ->orderBy('display_name')
+                ->get(),
+        );
     }
 
     public function create(RoleData $roleData): Role
@@ -73,6 +79,12 @@ class RoleService
             $role->fill($payload);
             $role->save();
             $role->permissions()->sync($roleData->permissionIds);
+
+            // Xóa cache permissions của tất cả users thuộc role này
+            User::query()
+                ->where('role_id', $role->id)
+                ->pluck('id')
+                ->each(static fn (string $userId): bool => Cache::forget("user:{$userId}:permissions"));
 
             return $role->refresh();
         });
