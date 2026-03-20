@@ -1,174 +1,154 @@
-# Project Context - E-commerce System (Advanced)
+# API Rules — REST API (Laravel Sanctum)
 
 ## Overview
-
-Đây là hệ thống bán hàng (E-commerce) gồm 2 phần chính:
-
-1. Admin Panel (Laravel Blade)
-2. Public API (cho Frontend SPA / Mobile)
+- Public API phục vụ Frontend SPA / Mobile App.
+- Tất cả response: **JSON only** — không render Blade view.
+- Auth: **Laravel Sanctum** (Bearer token).
 
 ---
 
-## Core Domains
+## Response Format (BẮT BUỘC)
 
-### 1. User Management
+### Success
+```json
+{
+  "status": "success",
+  "message": "Thao tác thành công",
+  "data": {}
+}
+```
 
-#### Mô tả
+### Error
+```json
+{
+  "status": "error",
+  "message": "Mô tả lỗi",
+  "errors": {}
+}
+```
 
-Quản lý người dùng và phân quyền
-
-#### Chức năng
-
-* CRUD User
-* Gán Role
-* Gán Permission
-* Khóa / mở tài khoản
-
-#### Roles
-
-* admin: toàn quyền
-* staff: quản lý sản phẩm, đơn hàng
-* customer: người mua hàng (chỉ dùng API)
-
----
-
-### 2. Product Management
-
-#### Thuộc tính
-
-* name
-* price
-* stock
-* description
-
-#### Mở rộng (optional)
-
-* category
-* images
-* variants (size, color)
-
-#### Logic
-
-* Giá không âm
-* Stock >= 0
+### Paginated
+```json
+{
+  "status": "success",
+  "message": "",
+  "data": {
+    "items": [],
+    "meta": {
+      "current_page": 1,
+      "last_page": 5,
+      "per_page": 15,
+      "total": 72
+    }
+  }
+}
+```
 
 ---
 
-### 3. Inventory Management
+## Route Structure
 
-#### Mô tả
+```php
+// routes/api.php
+Route::prefix('v1')->group(function () {
+    Route::prefix('auth')->group(function () {
+        Route::post('/login',    [AuthController::class, 'login']);
+        Route::post('/register', [AuthController::class, 'register']);
+        Route::middleware('auth:sanctum')
+             ->post('/logout', [AuthController::class, 'logout']);
+    });
 
-Quản lý tồn kho sản phẩm
-
-#### Hành vi
-
-* Tăng stock khi nhập hàng
-* Giảm stock khi tạo đơn
-* Không cho phép stock âm
-
----
-
-### 4. Order Management
-
-#### Thuộc tính
-
-* user_id
-* total_price
-* status
-
-#### Order Status
-
-* pending
-* paid
-* shipped
-* completed
-* cancelled
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::apiResource('products', ProductController::class);
+        Route::apiResource('orders',   OrderController::class);
+    });
+});
+```
 
 ---
 
-## Business Flow
+## API Controller Rules
 
-### 1. Create Order
+- Extends `App\Http\Controllers\Controller`.
+- Trả về `JsonResponse` — không dùng `redirect()`.
+- HTTP status codes phải đúng ngữ nghĩa:
+  - `200` OK (index, show, update)
+  - `201` Created (store)
+  - `204` No Content (destroy)
+  - `401` Unauthenticated
+  - `403` Forbidden
+  - `404` Not Found
+  - `422` Validation Error
 
-Flow:
+```php
+public function store(StoreProductRequest $request): JsonResponse
+{
+    $product = $this->productService->create(
+        CreateProductDTO::fromRequest($request)
+    );
 
-1. Validate request
-2. Kiểm tra stock
-3. Tạo Order
-4. Tạo Order Items
-5. Trừ stock
-6. Dispatch Job (email / notification)
-
----
-
-### 2. Cancel Order
-
-Flow:
-
-1. Kiểm tra trạng thái
-2. Update status = cancelled
-3. Hoàn lại stock
-
----
-
-### 3. Update Order Status
-
-* pending → paid
-* paid → shipped
-* shipped → completed
-
-Không cho phép:
-
-* completed → pending
+    return response()->json([
+        'status'  => 'success',
+        'message' => 'Tạo sản phẩm thành công',
+        'data'    => new ProductResource($product),
+    ], 201);
+}
+```
 
 ---
 
-## Data Relationships
+## API Resource (Transformer)
 
-* User hasMany Orders
-* Order hasMany OrderItems
-* Product hasMany OrderItems
+- Luôn dùng **Laravel API Resource** — không trả `$model->toArray()`.
+- Không expose trường nhạy cảm (password, remember_token, ...).
 
----
-
-## System Rules
-
-* Tất cả ID dùng UUID
-* Không cho phép stock âm
-* Không cho phép order nếu thiếu hàng
-
----
-
-## Admin vs API
-
-### Admin
-
-* Dùng Blade
-* CRUD data
-* Có UI
-
-### API
-
-* JSON only
-* Không render view
-* Dùng cho frontend riêng
+```php
+// app/Http/Resources/ProductResource.php
+public function toArray(Request $request): array
+{
+    return [
+        'id'    => $this->id,
+        'name'  => $this->name,
+        'price' => $this->price,
+        'stock' => $this->stock,
+    ];
+}
+```
 
 ---
 
-## Performance Considerations
+## Validation — FormRequest
 
-* Dùng eager loading khi cần
-* Tránh N+1 query
-* Dùng cache cho dữ liệu đọc nhiều
-* API Auth dùng Sanctum
+- Dùng FormRequest (lỗi validation trả JSON 422 tự động khi request là API).
+- Không cần override `failedValidation` nếu dùng `Accept: application/json`.
 
 ---
 
-## Notes for Copilot
+## Authentication
 
-Khi generate code:
+- Bảo vệ route bằng middleware `auth:sanctum`.
+- Tạo token: `$user->createToken('api-token')->plainTextToken`.
+- Logout: `$request->user()->currentAccessToken()->delete()`.
 
-* Hiểu rõ domain (user, product, order)
-* Không viết logic sai business flow
-* Luôn kiểm tra stock khi tạo order
-* Luôn handle transaction khi tạo order
+---
+
+## Rate Limiting
+
+Khai báo trong `AppServiceProvider::boot()`:
+
+```php
+RateLimiter::for('api', function (Request $request) {
+    return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+});
+```
+
+---
+
+## Anti-Patterns (CẤM trong API)
+
+- ❌ Render Blade view trong API Controller
+- ❌ Dùng `redirect()` trong API Controller
+- ❌ Trả `$model->toArray()` trực tiếp (bỏ qua Resource)
+- ❌ Expose trường nhạy cảm (password, remember_token)
+- ❌ HTTP status code không đúng ngữ nghĩa
+- ❌ Route API không có `auth:sanctum` khi cần bảo vệ

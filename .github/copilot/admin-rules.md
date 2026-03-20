@@ -1,33 +1,27 @@
-# Admin Rules - Laravel Blade (Advanced)
+# Admin Rules — Laravel Blade (SSR)
 
 ## Overview
-
-* Admin sử dụng Laravel Blade (SSR)
-* Không dùng SPA trong admin
-* Mục tiêu: CRUD + quản lý hệ thống
+- Admin sử dụng Laravel Blade (Server-Side Rendering).
+- Không dùng SPA trong admin.
+- Mục tiêu: CRUD + quản lý hệ thống.
 
 ---
 
 ## Admin Modules
-
-* User Management
-* Role & Permission
-* Product Management
-* Inventory Management
-* Order Management
+- User Management (+ Role & Permission)
+- Product Management (+ Category, Variant)
+- Inventory Management
+- Order Management
 
 ---
 
 ## Controller Rules
 
-* Controller trả về view
-* Không chứa business logic
-* Gọi Service để xử lý
-
-Ví dụ:
+- Controller trả về view, không chứa business logic.
+- Gọi Service để xử lý.
 
 ```php
-public function index()
+public function index(): View
 {
     $users = $this->userService->paginate();
     return view('admin.users.index', compact('users'));
@@ -38,76 +32,62 @@ public function index()
 
 ## View Structure
 
+```
 resources/views/
-├── admin/
-│   ├── layouts/
-│   │   └── app.blade.php
-│   ├── components/
-│   ├── users/
-│   ├── products/
-│   ├── orders/
+└── admin/
+    ├── layouts/
+    │   └── app.blade.php
+    ├── components/
+    ├── users/
+    ├── roles/
+    ├── permissions/
+    ├── categories/
+    ├── products/
+    └── orders/
+```
 
 ---
 
 ## Layout Rules
 
-* Tất cả page phải extend layout:
+Tất cả page phải extend layout:
 
 ```blade
 @extends('admin.layouts.app')
+@section('content')
+    ...
+@endsection
 ```
 
 ---
 
 ## UI Standards
 
-### 1. Index Page
+### Index Page
+- Hiển thị table với: pagination, search, filter.
 
-* Hiển thị table
-* Có:
-
-  * pagination
-  * search
-  * filter
-
----
-
-### 2. Create / Edit Page
-
-* Dùng form
-* Hiển thị validation error
-
----
-
-## Blade Component Usage
-
-* Tái sử dụng component:
-
-Ví dụ:
-
-* input
-* button
-* table
+### Create / Edit Page
+- Dùng form với validation error display.
 
 ---
 
 ## Form Rules
 
 ```blade
-<form method="POST" action="">
+<form method="POST" action="{{ route('admin.users.store') }}">
     @csrf
+    ...
 </form>
 ```
 
-* Update:
-
+Update phải thêm:
 ```blade
 @method('PUT')
 ```
 
 ---
 
-## Validation Error
+## Validation Error Display
 
 ```blade
 @error('name')
@@ -119,31 +99,23 @@ Ví dụ:
 
 ## Route Naming Convention
 
-| Action  | Route               |
-| ------- | ------------------- |
-| index   | admin.users.index   |
-| create  | admin.users.create  |
-| store   | admin.users.store   |
-| edit    | admin.users.edit    |
-| update  | admin.users.update  |
-| destroy | admin.users.destroy |
+| Action  | Route Name             |
+|---------|------------------------|
+| index   | admin.users.index      |
+| create  | admin.users.create     |
+| store   | admin.users.store      |
+| show    | admin.users.show       |
+| edit    | admin.users.edit       |
+| update  | admin.users.update     |
+| destroy | admin.users.destroy    |
 
 ---
 
 ## Authorization
 
-* Admin Auth dùng Session (Laravel default)
-* Dùng middleware hoặc policy
-* Ví dụ:
-
-  * chỉ admin mới quản lý user
-
----
-
-## Data Handling
-
-* Không query DB trong blade
-* Data phải được truyền từ controller
+- Admin Auth dùng Session (Laravel default).
+- Dùng middleware `permission` để giới hạn theo action.
+- Unauthorized → redirect về `admin.dashboard` với flash error.
 
 ---
 
@@ -159,36 +131,28 @@ Ví dụ:
 
 ```blade
 @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
 @endif
 ```
 
 ---
 
-## Anti-pattern (CẤM)
+## Security — XSS
 
-* ❌ Query DB trong Blade
-* ❌ Logic trong view
-* ❌ Không dùng layout
-* ❌ Form không có CSRF
+- Luôn dùng `{{ }}` để escape output.
+- ❌ Không dùng `{!! !!}` trừ khi render HTML đã được sanitize.
 
 ---
 
-## When Generating Admin Code
+## Anti-Patterns (CẤM trong Admin)
 
-Copilot PHẢI:
-
-* Tạo Controller + Service
-* Tạo view theo structure
-* Dùng layout
-* Tạo form đúng chuẩn
-* Có validation error
-* Có pagination
-* Code phải clean, dễ đọc
-
-## Security - XSS
-
-- Luôn dùng {{ }} để escape
-- ❌ Không dùng {!! !!} trừ khi cần thiết
+- ❌ Query DB trong Blade template
+- ❌ Logic xử lý trong View
+- ❌ Page không extend layout
+- ❌ Form không có `@csrf`
+- ❌ Dùng `{!! !!}` vô tội vạ (XSS)
+- ❌ Data không được truyền từ Controller (query trực tiếp trong view)
