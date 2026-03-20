@@ -3,7 +3,6 @@
 namespace App\Services\Catalog;
 
 use App\DTOs\Catalog\CategoryData;
-use App\DTOs\Catalog\CategoryQueryData;
 use App\Exceptions\CannotDeleteCategoryException;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
