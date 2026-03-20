@@ -23,6 +23,22 @@
     </div>
 
     <div class="field" style="margin-top: 1rem;">
+        <label for="parent_id">Danh mục cha</label>
+        <select id="parent_id" name="parent_id">
+            <option value="">— Không có (danh mục gốc) —</option>
+            @foreach ($parentOptions as $option)
+                <option
+                    value="{{ $option->id }}"
+                    @selected(old('parent_id', isset($category) ? $category->parent_id : '') === $option->id)
+                >
+                    {{ str_repeat('　', $option->depth) }}{{ $option->depth > 0 ? '└ ' : '' }}{{ $option->name }}
+                </option>
+            @endforeach
+        </select>
+        <span class="help-text">Chọn vị trí trong cây danh mục.</span>
+    </div>
+
+    <div class="field" style="margin-top: 1rem;">
         <label for="description">Mô tả</label>
         <textarea id="description" name="description">{{ old('description', isset($category) ? $category->description : '') }}</textarea>
     </div>

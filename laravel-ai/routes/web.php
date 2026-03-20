@@ -122,6 +122,9 @@ Route::prefix('admin')->group(function (): void {
             Route::put('/{category}', [AdminCategoryController::class, 'update'])
                 ->middleware('permission:categories_update')
                 ->name('update');
+            Route::post('/{category}/move', [AdminCategoryController::class, 'move'])
+                ->middleware('permission:categories_update')
+                ->name('move');
             Route::delete('/{category}', [AdminCategoryController::class, 'destroy'])
                 ->middleware('permission:categories_delete')
                 ->name('destroy');
