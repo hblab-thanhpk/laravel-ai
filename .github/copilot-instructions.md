@@ -33,7 +33,7 @@ Chi tiết từng chủ đề nằm trong `.github/copilot/` — **đọc file p
 | `admin-rules.md` | Admin Panel (Blade SSR) — view, form, pagination, flash |
 | `api-rules.md` | REST API — response format, Sanctum, Resource, throttling |
 | `database.md` | PostgreSQL, UUID, migrations, Eloquent rules |
-| `devops.md` | Docker Compose, GitHub Actions CI/CD |
+<!-- | `devops.md` | Docker Compose, GitHub Actions CI/CD | -->
 
 ---
 

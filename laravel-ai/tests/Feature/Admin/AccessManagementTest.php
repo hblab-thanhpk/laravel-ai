@@ -53,6 +53,9 @@ class AccessManagementTest extends TestCase
                 'manage_products',
                 'manage_inventory',
                 'manage_orders',
+                'orders_view',
+                'orders_update',
+                'orders_delete',
             ],
             $staffPermissionNames,
         );

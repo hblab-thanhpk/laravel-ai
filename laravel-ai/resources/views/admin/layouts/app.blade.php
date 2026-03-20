@@ -447,6 +447,9 @@
                     @if (auth()->user()->hasPermission('products_view'))
                         <a class="nav-link {{ request()->routeIs('admin.products.*') ? 'is-active' : '' }}" href="{{ route('admin.products.index') }}">Products</a>
                     @endif
+                    @if (auth()->user()->hasPermission('orders_view'))
+                        <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'is-active' : '' }}" href="{{ route('admin.orders.index') }}">Orders</a>
+                    @endif
                 </div>
             @endauth
         </div>

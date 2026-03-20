@@ -46,14 +46,18 @@ class CategoryService
      */
     public function allActiveForSelect(): Collection
     {
-        return Cache::remember(
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = Cache::remember(
             'categories:active',
             now()->addMinutes(30),
-            static fn (): Collection => Category::query()
+            static fn (): array => Category::query()
                 ->where('is_active', true)
                 ->orderBy('name')
-                ->get(['id', 'name']),
+                ->get(['id', 'name'])
+                ->toArray(),
         );
+
+        return Category::hydrate($rows);
     }
 
     public function create(CategoryData $categoryData): Category

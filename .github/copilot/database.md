@@ -52,3 +52,12 @@ $table->index(['user_id', 'status']);
 // AppServiceProvider::boot()
 Model::preventLazyLoading(! app()->isProduction());
 ```
+
+<!-- # Mặc định: 10.000 users
+php artisan db:seed --class=LoadTestUsersSeeder
+
+# Tuỳ chỉnh số lượng
+LOAD_TEST_COUNT=50000 php artisan db:seed --class=LoadTestUsersSeeder
+
+# Xoá toàn bộ load-test users sau khi test xong
+php artisan tinker --execute="App\Models\User::where('email', 'like', '%@loadtest.local')->delete();" -->

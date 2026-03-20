@@ -150,6 +150,21 @@ class RolePermissionSeeder extends Seeder
                 'display_name' => 'Quản lý đơn hàng',
                 'description' => 'Xử lý và theo dõi đơn hàng.',
             ],
+            [
+                'name' => 'orders_view',
+                'display_name' => 'Xem danh sách orders',
+                'description' => 'Xem danh sách và chi tiết đơn hàng.',
+            ],
+            [
+                'name' => 'orders_update',
+                'display_name' => 'Cập nhật orders',
+                'description' => 'Cập nhật trạng thái đơn hàng.',
+            ],
+            [
+                'name' => 'orders_delete',
+                'display_name' => 'Xóa orders',
+                'description' => 'Xóa đơn hàng.',
+            ],
         ];
 
         foreach ($permissions as $permission) {
@@ -193,6 +208,9 @@ class RolePermissionSeeder extends Seeder
                     'manage_products',
                     'manage_inventory',
                     'manage_orders',
+                    'orders_view',
+                    'orders_update',
+                    'orders_delete',
                 ],
             ],
             [

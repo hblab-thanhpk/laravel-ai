@@ -44,13 +44,17 @@ class RoleService
      */
     public function allForForm(): Collection
     {
-        return Cache::remember(
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = Cache::remember(
             'roles:all',
             now()->addHour(),
-            static fn (): Collection => Role::query()
+            static fn (): array => Role::query()
                 ->orderBy('display_name')
-                ->get(),
+                ->get(['id', 'name', 'display_name'])
+                ->toArray(),
         );
+
+        return Role::hydrate($rows);
     }
 
     /**
@@ -58,13 +62,17 @@ class RoleService
      */
     public function allPermissionsForForm(): Collection
     {
-        return Cache::remember(
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = Cache::remember(
             'permissions:all',
             now()->addHour(),
-            static fn (): Collection => Permission::query()
+            static fn (): array => Permission::query()
                 ->orderBy('display_name')
-                ->get(),
+                ->get(['id', 'name', 'display_name'])
+                ->toArray(),
         );
+
+        return Permission::hydrate($rows);
     }
 
     public function create(RoleData $roleData): Role
