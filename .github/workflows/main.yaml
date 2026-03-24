@@ -78,7 +78,7 @@ jobs:
           php artisan key:generate
 
       - name: Run tests
-        run: php artisan test --parallel
+        run: php artisan test
 
   # ─────────────────────────────────────────
   # JOB 3: Build & push Docker image (chỉ khi merge vào main)
