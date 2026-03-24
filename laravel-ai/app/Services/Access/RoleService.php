@@ -8,10 +8,10 @@ use App\Exceptions\CannotDeleteRoleException;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class RoleService
@@ -44,13 +44,17 @@ class RoleService
      */
     public function allForForm(): Collection
     {
-        return Cache::remember(
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = Cache::remember(
             'roles:all',
             now()->addHour(),
-            static fn (): Collection => Role::query()
+            static fn (): array => Role::query()
                 ->orderBy('display_name')
-                ->get(),
+                ->get(['id', 'name', 'display_name'])
+                ->toArray(),
         );
+
+        return Role::hydrate($rows);
     }
 
     /**
@@ -58,13 +62,17 @@ class RoleService
      */
     public function allPermissionsForForm(): Collection
     {
-        return Cache::remember(
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = Cache::remember(
             'permissions:all',
             now()->addHour(),
-            static fn (): Collection => Permission::query()
+            static fn (): array => Permission::query()
                 ->orderBy('display_name')
-                ->get(),
+                ->get(['id', 'name', 'display_name'])
+                ->toArray(),
         );
+
+        return Permission::hydrate($rows);
     }
 
     public function create(RoleData $roleData): Role

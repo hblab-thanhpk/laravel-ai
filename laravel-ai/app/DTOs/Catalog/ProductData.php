@@ -13,8 +13,7 @@ final readonly class ProductData
         public int $stock,
         public ?string $description,
         public bool $isActive,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{category_id?: string|null, name: string, slug: string, sku: string, price: numeric-string|int|float, stock: int, description?: string|null, is_active: bool}  $data

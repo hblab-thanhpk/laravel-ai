@@ -33,6 +33,27 @@
             </div>
 
             <div class="detail-item">
+                <span>Danh mục cha</span>
+                <strong>
+                    @if ($category->parent)
+                        <a href="{{ route('admin.categories.show', $category->parent) }}">{{ $category->parent->name }}</a>
+                    @else
+                        <span class="muted">— Danh mục gốc —</span>
+                    @endif
+                </strong>
+            </div>
+
+            <div class="detail-item">
+                <span>Cấp độ (depth)</span>
+                <strong>{{ $category->depth }}</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>NSM (lft / rgt)</span>
+                <strong><span class="inline-code">{{ $category->_lft }} / {{ $category->_rgt }}</span></strong>
+            </div>
+
+            <div class="detail-item">
                 <span>Trạng thái</span>
                 <strong>{{ $category->is_active ? 'Hoạt động' : 'Ngừng hoạt động' }}</strong>
             </div>
@@ -47,6 +68,19 @@
                 <strong>{{ $category->created_at?->format('d/m/Y H:i') }}</strong>
             </div>
         </div>
+
+        @if ($category->children->isNotEmpty())
+            <div style="margin-top: 1.25rem;">
+                <strong>Danh mục con:</strong>
+                <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                    @foreach ($category->children as $child)
+                        <li>
+                            <a href="{{ route('admin.categories.show', $child) }}">{{ $child->name }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         @if ($category->description)
             <div class="card" style="margin-top: 1rem; margin-bottom: 0;">

@@ -25,8 +25,7 @@ final readonly class ProductQueryData
         public int $perPage,
         public string $sortBy,
         public string $sortDirection,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{search?: string|null, category_id?: string|null, status?: string|null, per_page?: int|string|null, sort_by?: string|null, sort_dir?: string|null}  $data

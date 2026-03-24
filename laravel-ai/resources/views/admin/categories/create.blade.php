@@ -12,6 +12,6 @@
 
     <form action="{{ route('admin.categories.store') }}" method="POST">
         @csrf
-        @include('admin.categories.form', ['submitLabel' => 'Tạo category'])
+        @include('admin.categories.form', ['submitLabel' => 'Tạo category', 'parentOptions' => $parentOptions])
     </form>
 @endsection

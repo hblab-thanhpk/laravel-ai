@@ -8,8 +8,7 @@ final readonly class LoginData
         public string $email,
         public string $password,
         public string $deviceName,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{email: string, password: string, device_name: string}  $data

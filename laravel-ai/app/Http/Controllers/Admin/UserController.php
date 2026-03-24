@@ -12,9 +12,9 @@ use App\Http\Requests\Admin\User\UpdateUserRequest;
 use App\Models\User;
 use App\Services\Access\RoleService;
 use App\Services\User\UserService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class UserController extends Controller

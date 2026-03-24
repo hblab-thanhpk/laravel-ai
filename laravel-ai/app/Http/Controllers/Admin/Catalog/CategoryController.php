@@ -7,6 +7,7 @@ use App\DTOs\Catalog\CategoryQueryData;
 use App\Exceptions\CannotDeleteCategoryException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\IndexCategoryRequest;
+use App\Http\Requests\Admin\Category\MoveCategoryRequest;
 use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
 use App\Models\Category;
@@ -21,14 +22,17 @@ class CategoryController extends Controller
         $queryData = CategoryQueryData::fromArray($request->validated());
 
         return view('admin.categories.index', [
-            'categories' => $categoryService->paginate($queryData),
+            'categories' => $categoryService->getTree($queryData->search, $queryData->isActive),
             'filters' => $queryData->toArray(),
+            'isFiltered' => $queryData->isFiltered(),
         ]);
     }
 
-    public function create(): View
+    public function create(CategoryService $categoryService): View
     {
-        return view('admin.categories.create');
+        return view('admin.categories.create', [
+            'parentOptions' => $categoryService->allForParentSelect(),
+        ]);
     }
 
     public function store(StoreCategoryRequest $request, CategoryService $categoryService): RedirectResponse
@@ -43,20 +47,25 @@ class CategoryController extends Controller
     public function show(Category $category): View
     {
         return view('admin.categories.show', [
-            'category' => $category->loadCount('products'),
+            'category' => $category->loadCount('products')->load('parent', 'children'),
         ]);
     }
 
-    public function edit(Category $category): View
+    public function edit(Category $category, CategoryService $categoryService): View
     {
         return view('admin.categories.edit', [
             'category' => $category,
+            'parentOptions' => $categoryService->allForParentSelect($category->id),
         ]);
     }
 
     public function update(UpdateCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
     {
-        $category = $categoryService->update($category, CategoryData::fromArray($request->validated()));
+        try {
+            $category = $categoryService->update($category, CategoryData::fromArray($request->validated()));
+        } catch (\InvalidArgumentException $e) {
+            return back()->withErrors(['parent_id' => $e->getMessage()]);
+        }
 
         return redirect()
             ->route('admin.categories.show', $category)
@@ -76,5 +85,20 @@ class CategoryController extends Controller
         return redirect()
             ->route('admin.categories.index')
             ->with('success', 'Xóa danh mục thành công.');
+    }
+
+    public function move(MoveCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
+    {
+        $direction = $request->validated('direction');
+
+        if ($direction === 'up') {
+            $categoryService->moveUp($category);
+        } else {
+            $categoryService->moveDown($category);
+        }
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Di chuyển danh mục thành công.');
     }
 }

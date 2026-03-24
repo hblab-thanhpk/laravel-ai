@@ -21,8 +21,7 @@ final readonly class UserQueryData
         public int $perPage,
         public string $sortBy,
         public string $sortDirection,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{search?: string|null, role_id?: string|null, per_page?: int|string|null, sort_by?: string|null, sort_dir?: string|null}  $data

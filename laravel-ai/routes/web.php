@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\Catalog\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\Catalog\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\Catalog\ProductVariantController as AdminProductVariantController;
+use App\Http\Controllers\Admin\Order\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -121,6 +122,9 @@ Route::prefix('admin')->group(function (): void {
             Route::put('/{category}', [AdminCategoryController::class, 'update'])
                 ->middleware('permission:categories_update')
                 ->name('update');
+            Route::post('/{category}/move', [AdminCategoryController::class, 'move'])
+                ->middleware('permission:categories_update')
+                ->name('move');
             Route::delete('/{category}', [AdminCategoryController::class, 'destroy'])
                 ->middleware('permission:categories_delete')
                 ->name('destroy');
@@ -169,6 +173,24 @@ Route::prefix('admin')->group(function (): void {
                     ->middleware('permission:product_variants_delete')
                     ->name('destroy');
             });
+        });
+
+        Route::prefix('orders')->name('admin.orders.')->group(function (): void {
+            Route::get('/', [AdminOrderController::class, 'index'])
+                ->middleware('permission:orders_view')
+                ->name('index');
+            Route::get('/{order}', [AdminOrderController::class, 'show'])
+                ->middleware('permission:orders_view')
+                ->name('show');
+            Route::get('/{order}/edit', [AdminOrderController::class, 'edit'])
+                ->middleware('permission:orders_update')
+                ->name('edit');
+            Route::put('/{order}', [AdminOrderController::class, 'update'])
+                ->middleware('permission:orders_update')
+                ->name('update');
+            Route::delete('/{order}', [AdminOrderController::class, 'destroy'])
+                ->middleware('permission:orders_delete')
+                ->name('destroy');
         });
     });
 });

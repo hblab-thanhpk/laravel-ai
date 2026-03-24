@@ -12,8 +12,7 @@ final readonly class RoleData
         public string $displayName,
         public ?string $description,
         public array $permissionIds,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{name: string, display_name: string, description?: string|null, permission_ids?: array<int, string>}  $data

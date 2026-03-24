@@ -20,8 +20,7 @@ class ProductController extends Controller
         IndexProductRequest $request,
         ProductService $productService,
         CategoryService $categoryService,
-    ): View
-    {
+    ): View {
         $queryData = ProductQueryData::fromArray($request->validated());
 
         return view('admin.products.index', [

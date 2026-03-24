@@ -9,8 +9,7 @@ final readonly class UserData
         public string $email,
         public ?string $password,
         public ?string $roleId,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{name: string, email: string, password?: string|null, role_id?: string|null}  $data

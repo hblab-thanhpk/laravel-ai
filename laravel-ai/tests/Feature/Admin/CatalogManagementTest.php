@@ -2,7 +2,10 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Category;
 use App\Models\Permission;
+use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
@@ -33,7 +36,7 @@ class CatalogManagementTest extends TestCase
                 'is_active' => '1',
             ]);
 
-        $category = \App\Models\Category::query()->where('slug', 'thoi-trang-nam')->first();
+        $category = Category::query()->where('slug', 'thoi-trang-nam')->first();
 
         $this->assertNotNull($category);
         $storeCategoryResponse->assertRedirect(route('admin.categories.show', $category));
@@ -50,7 +53,7 @@ class CatalogManagementTest extends TestCase
                 'is_active' => '1',
             ]);
 
-        $product = \App\Models\Product::query()->where('sku', 'PRD-BASIC-TSHIRT')->first();
+        $product = Product::query()->where('sku', 'PRD-BASIC-TSHIRT')->first();
 
         $this->assertNotNull($product);
         $storeProductResponse->assertRedirect(route('admin.products.show', $product));
@@ -65,7 +68,7 @@ class CatalogManagementTest extends TestCase
                 'is_active' => '1',
             ]);
 
-        $variant = \App\Models\ProductVariant::query()->where('sku', 'VAR-BASIC-RED-M')->first();
+        $variant = ProductVariant::query()->where('sku', 'VAR-BASIC-RED-M')->first();
 
         $this->assertNotNull($variant);
         $storeVariantResponse->assertRedirect(route('admin.products.variants.index', $product));
@@ -154,9 +157,9 @@ class CatalogManagementTest extends TestCase
         /** @var User $admin */
         $admin = User::factory()->admin()->create();
 
-        $category = \App\Models\Category::factory()->create();
+        $category = Category::factory()->create();
 
-        \App\Models\Product::factory()->create([
+        Product::factory()->create([
             'category_id' => $category->id,
         ]);
 
