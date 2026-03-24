@@ -18,10 +18,10 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'     => User::factory(),
+            'user_id' => User::factory(),
             'total_price' => fake()->randomFloat(2, 50, 10000),
-            'status'      => OrderStatus::Pending,
-            'notes'       => fake()->optional()->sentence(),
+            'status' => OrderStatus::Pending,
+            'notes' => fake()->optional()->sentence(),
         ];
     }
 

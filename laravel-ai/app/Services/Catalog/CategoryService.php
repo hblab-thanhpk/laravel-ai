@@ -55,7 +55,7 @@ class CategoryService
             $excluded = $all->firstWhere('id', $excludeId);
             if ($excluded !== null) {
                 $all = $all->filter(
-                    fn (Category $c): bool => !($c->_lft >= $excluded->_lft && $c->_rgt <= $excluded->_rgt),
+                    fn (Category $c): bool => ! ($c->_lft >= $excluded->_lft && $c->_rgt <= $excluded->_rgt),
                 )->values();
             }
         }
@@ -90,7 +90,7 @@ class CategoryService
                 ->where('parent_id', $categoryData->parentId)
                 ->max('sort_order') + 1;
 
-            $category = new Category();
+            $category = new Category;
             $category->fill(array_merge($categoryData->toPayload(), ['sort_order' => $sortOrder]));
             $category->save();
 
@@ -218,8 +218,8 @@ class CategoryService
     }
 
     /**
-     * @param  Collection<int, Category>                                    $all
-     * @param  array<string, array{_lft: int, _rgt: int, depth: int}>       $updates
+     * @param  Collection<int, Category>  $all
+     * @param  array<string, array{_lft: int, _rgt: int, depth: int}>  $updates
      */
     private function computePositions(
         Collection $all,

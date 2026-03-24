@@ -58,7 +58,7 @@ class ProductCrudTest extends TestCase
                 'status', 'message',
                 'data' => [
                     'items' => [['id', 'name', 'slug', 'sku', 'price', 'stock', 'is_active']],
-                    'meta'  => ['current_page', 'last_page', 'per_page', 'total'],
+                    'meta' => ['current_page', 'last_page', 'per_page', 'total'],
                 ],
             ])
             ->assertJsonPath('data.meta.total', 5);
@@ -94,7 +94,7 @@ class ProductCrudTest extends TestCase
 
     public function test_authenticated_user_can_view_product_detail(): void
     {
-        $user    = $this->actingAsUser();
+        $user = $this->actingAsUser();
         $product = Product::factory()->create();
 
         $this->getJson("/api/v1/products/{$product->id}", $this->authHeader($user))
@@ -121,18 +121,18 @@ class ProductCrudTest extends TestCase
 
     public function test_authenticated_user_can_create_product(): void
     {
-        $user     = $this->actingAsUser();
+        $user = $this->actingAsUser();
         $category = Category::factory()->create();
 
         $payload = [
             'category_id' => $category->id,
-            'name'        => 'New Product',
-            'slug'        => 'new-product',
-            'sku'         => 'SKU-NEW-001',
-            'price'       => 99.99,
-            'stock'       => 10,
+            'name' => 'New Product',
+            'slug' => 'new-product',
+            'sku' => 'SKU-NEW-001',
+            'price' => 99.99,
+            'stock' => 10,
             'description' => 'Test description.',
-            'is_active'   => true,
+            'is_active' => true,
         ];
 
         $this->postJson('/api/v1/products', $payload, $this->authHeader($user))
@@ -155,15 +155,15 @@ class ProductCrudTest extends TestCase
 
     public function test_store_validates_unique_slug_and_sku(): void
     {
-        $user    = $this->actingAsUser();
+        $user = $this->actingAsUser();
         $product = Product::factory()->create(['slug' => 'existing-slug', 'sku' => 'EXISTING-SKU']);
 
         $this->postJson('/api/v1/products', [
-            'name'      => 'Another Product',
-            'slug'      => 'existing-slug',  // duplicate
-            'sku'       => 'EXISTING-SKU',   // duplicate
-            'price'     => 10,
-            'stock'     => 5,
+            'name' => 'Another Product',
+            'slug' => 'existing-slug',  // duplicate
+            'sku' => 'EXISTING-SKU',   // duplicate
+            'price' => 10,
+            'stock' => 5,
             'is_active' => true,
         ], $this->authHeader($user))
             ->assertUnprocessable()
@@ -174,15 +174,15 @@ class ProductCrudTest extends TestCase
 
     public function test_authenticated_user_can_update_product(): void
     {
-        $user    = $this->actingAsUser();
+        $user = $this->actingAsUser();
         $product = Product::factory()->create(['name' => 'Old Name']);
 
         $this->putJson("/api/v1/products/{$product->id}", [
-            'name'      => 'Updated Name',
-            'slug'      => $product->slug,
-            'sku'       => $product->sku,
-            'price'     => $product->price,
-            'stock'     => $product->stock,
+            'name' => 'Updated Name',
+            'slug' => $product->slug,
+            'sku' => $product->sku,
+            'price' => $product->price,
+            'stock' => $product->stock,
             'is_active' => true,
         ], $this->authHeader($user))
             ->assertOk()
@@ -193,16 +193,16 @@ class ProductCrudTest extends TestCase
 
     public function test_update_ignores_own_slug_and_sku_uniqueness(): void
     {
-        $user    = $this->actingAsUser();
+        $user = $this->actingAsUser();
         $product = Product::factory()->create();
 
         // Gửi lại chính slug/sku của product → không được báo lỗi unique
         $this->putJson("/api/v1/products/{$product->id}", [
-            'name'      => $product->name,
-            'slug'      => $product->slug,
-            'sku'       => $product->sku,
-            'price'     => $product->price,
-            'stock'     => $product->stock,
+            'name' => $product->name,
+            'slug' => $product->slug,
+            'sku' => $product->sku,
+            'price' => $product->price,
+            'stock' => $product->stock,
             'is_active' => $product->is_active,
         ], $this->authHeader($user))
             ->assertOk();
@@ -212,7 +212,7 @@ class ProductCrudTest extends TestCase
 
     public function test_authenticated_user_can_delete_product(): void
     {
-        $user    = $this->actingAsUser();
+        $user = $this->actingAsUser();
         $product = Product::factory()->create();
 
         $this->deleteJson("/api/v1/products/{$product->id}", [], $this->authHeader($user))

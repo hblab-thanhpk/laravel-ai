@@ -14,6 +14,7 @@ class ProductVariant extends Model
 {
     /** @use HasFactory<ProductVariantFactory> */
     use HasFactory;
+
     use HasUuids;
 
     /**

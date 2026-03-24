@@ -20,8 +20,7 @@ final readonly class OrderQueryData
         public int $perPage,
         public string $sortBy,
         public string $sortDirection,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{search?: string|null, status?: string|null, per_page?: int|string|null, sort_by?: string|null, sort_dir?: string|null}  $data
@@ -51,10 +50,10 @@ final readonly class OrderQueryData
     public function toArray(): array
     {
         return [
-            'search'   => $this->search ?? '',
-            'status'   => $this->status ?? 'all',
+            'search' => $this->search ?? '',
+            'status' => $this->status ?? 'all',
             'per_page' => $this->perPage,
-            'sort_by'  => $this->sortBy,
+            'sort_by' => $this->sortBy,
             'sort_dir' => $this->sortDirection,
         ];
     }

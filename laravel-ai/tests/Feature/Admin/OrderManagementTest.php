@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Permission;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -140,14 +141,14 @@ class OrderManagementTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $product = Product::factory()->create(['stock' => 10]);
-        $order   = Order::factory()->paid()->create();
+        $order = Order::factory()->paid()->create();
 
         OrderItem::factory()->create([
-            'order_id'   => $order->id,
+            'order_id' => $order->id,
             'product_id' => $product->id,
-            'quantity'   => 3,
+            'quantity' => 3,
             'unit_price' => $product->price,
-            'subtotal'   => (float) $product->price * 3,
+            'subtotal' => (float) $product->price * 3,
             'product_name' => $product->name,
         ]);
 
@@ -194,8 +195,8 @@ class OrderManagementTest extends TestCase
     {
         /** @var User $staffWithViewOnly */
         $staffWithViewOnly = User::factory()->create();
-        $staffRole = \App\Models\Role::query()->where('name', 'staff')->first();
-        $viewPermission = \App\Models\Permission::query()->where('name', 'orders_view')->first();
+        $staffRole = Role::query()->where('name', 'staff')->first();
+        $viewPermission = Permission::query()->where('name', 'orders_view')->first();
         $staffRole->permissions()->sync([$viewPermission->id]);
         $staffWithViewOnly->update(['role_id' => $staffRole->id]);
         $staffWithViewOnly->flushPermissionsCache();

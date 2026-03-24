@@ -19,7 +19,7 @@ class OrderController extends Controller
         $queryData = OrderQueryData::fromArray($request->validated());
 
         return view('admin.orders.index', [
-            'orders'  => $orderService->paginate($queryData),
+            'orders' => $orderService->paginate($queryData),
             'filters' => $queryData->toArray(),
         ]);
     }
@@ -38,7 +38,7 @@ class OrderController extends Controller
         $order->load('user');
 
         return view('admin.orders.edit', [
-            'order'              => $order,
+            'order' => $order,
             'allowedTransitions' => $order->status->allowedTransitions(),
         ]);
     }

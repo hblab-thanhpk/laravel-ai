@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\Category;
 
 use App\Models\Category;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -21,7 +22,7 @@ class UpdateCategoryRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -29,8 +30,8 @@ class UpdateCategoryRequest extends FormRequest
         $category = $this->route('category');
 
         return [
-            'name'      => ['required', 'string', 'max:255', Rule::unique('categories', 'name')->ignore($category->getKey())],
-            'slug'      => [
+            'name' => ['required', 'string', 'max:255', Rule::unique('categories', 'name')->ignore($category->getKey())],
+            'slug' => [
                 'required',
                 'string',
                 'max:255',
@@ -38,8 +39,8 @@ class UpdateCategoryRequest extends FormRequest
                 Rule::unique('categories', 'slug')->ignore($category->getKey()),
             ],
             'description' => ['nullable', 'string', 'max:2000'],
-            'is_active'   => ['required', 'boolean'],
-            'parent_id'   => ['nullable', 'uuid', 'exists:categories,id', Rule::notIn([$category->getKey()])],
+            'is_active' => ['required', 'boolean'],
+            'parent_id' => ['nullable', 'uuid', 'exists:categories,id', Rule::notIn([$category->getKey()])],
         ];
     }
 

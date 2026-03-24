@@ -15,6 +15,7 @@ class Category extends Model
 {
     /** @use HasFactory<CategoryFactory> */
     use HasFactory;
+
     use HasUuids;
 
     /**
@@ -23,11 +24,11 @@ class Category extends Model
     protected function casts(): array
     {
         return [
-            'is_active'  => 'boolean',
+            'is_active' => 'boolean',
             'sort_order' => 'integer',
-            '_lft'       => 'integer',
-            '_rgt'       => 'integer',
-            'depth'      => 'integer',
+            '_lft' => 'integer',
+            '_rgt' => 'integer',
+            'depth' => 'integer',
         ];
     }
 

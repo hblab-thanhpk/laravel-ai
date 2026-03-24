@@ -8,8 +8,7 @@ final readonly class PermissionData
         public string $name,
         public string $displayName,
         public ?string $description,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{name: string, display_name: string, description?: string|null}  $data

@@ -26,9 +26,9 @@ class LoadTestUsersSeeder extends Seeder
         $now = now()->toDateTimeString();
 
         $this->command?->info("Tạo {$count} load-test users...");
-        $this->command?->info("Xoá load-test users cũ nếu có...");
+        $this->command?->info('Xoá load-test users cũ nếu có...');
         DB::table('users')->where('email', 'like', '%@loadtest.local')->delete();
-        $this->command?->info("Bắt đầu insert...");
+        $this->command?->info('Bắt đầu insert...');
 
         $bar = $this->command?->getOutput()->createProgressBar($count);
         $bar?->start();
@@ -44,16 +44,16 @@ class LoadTestUsersSeeder extends Seeder
             for ($i = 0; $i < $batchSize; $i++) {
                 $n = $chunk * $chunkSize + $i + 1;
                 $rows[] = [
-                    'id'                => Str::uuid()->toString(),
-                    'name'              => 'LoadTest User ' . $n,
-                    'email'             => "loadtest_{$n}@loadtest.local",
-                    'password'          => $hashedPassword,
-                    'is_admin'          => false,
-                    'role_id'           => $customerRoleId,
+                    'id' => Str::uuid()->toString(),
+                    'name' => 'LoadTest User '.$n,
+                    'email' => "loadtest_{$n}@loadtest.local",
+                    'password' => $hashedPassword,
+                    'is_admin' => false,
+                    'role_id' => $customerRoleId,
                     'email_verified_at' => $now,
-                    'remember_token'    => Str::random(10),
-                    'created_at'        => $now,
-                    'updated_at'        => $now,
+                    'remember_token' => Str::random(10),
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ];
             }
 
@@ -64,6 +64,6 @@ class LoadTestUsersSeeder extends Seeder
         $bar?->finish();
         $this->command?->newLine();
         $this->command?->info("Hoàn thành: đã tạo {$count} users.");
-        $this->command?->info("Đăng nhập với email bất kỳ loadtest_*@loadtest.local / password: password");
+        $this->command?->info('Đăng nhập với email bất kỳ loadtest_*@loadtest.local / password: password');
     }
 }

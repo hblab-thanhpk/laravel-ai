@@ -23,11 +23,11 @@ class ProductController extends Controller
 
         return $this->successResponse('Danh sách sản phẩm.', [
             'items' => ProductResource::collection($paginator->items())->resolve(),
-            'meta'  => [
+            'meta' => [
                 'current_page' => $paginator->currentPage(),
-                'last_page'    => $paginator->lastPage(),
-                'per_page'     => $paginator->perPage(),
-                'total'        => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
             ],
         ]);
     }

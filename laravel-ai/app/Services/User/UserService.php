@@ -2,9 +2,9 @@
 
 namespace App\Services\User;
 
-use App\Exceptions\CannotModifyLastAdminException;
-use App\DTOs\User\UserQueryData;
 use App\DTOs\User\UserData;
+use App\DTOs\User\UserQueryData;
+use App\Exceptions\CannotModifyLastAdminException;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

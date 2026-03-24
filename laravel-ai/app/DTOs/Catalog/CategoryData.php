@@ -10,8 +10,7 @@ final readonly class CategoryData
         public ?string $description,
         public bool $isActive,
         public ?string $parentId,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{name: string, slug: string, description?: string|null, is_active: bool, parent_id?: string|null}  $data
@@ -37,11 +36,11 @@ final readonly class CategoryData
     public function toPayload(): array
     {
         return [
-            'name'        => $this->name,
-            'slug'        => $this->slug,
+            'name' => $this->name,
+            'slug' => $this->slug,
             'description' => $this->description,
-            'is_active'   => $this->isActive,
-            'parent_id'   => $this->parentId,
+            'is_active' => $this->isActive,
+            'parent_id' => $this->parentId,
         ];
     }
 }

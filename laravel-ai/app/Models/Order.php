@@ -16,6 +16,7 @@ class Order extends Model
 {
     /** @use HasFactory<OrderFactory> */
     use HasFactory;
+
     use HasUuids;
 
     /**
@@ -25,7 +26,7 @@ class Order extends Model
     {
         return [
             'total_price' => 'decimal:2',
-            'status'      => OrderStatus::class,
+            'status' => OrderStatus::class,
         ];
     }
 

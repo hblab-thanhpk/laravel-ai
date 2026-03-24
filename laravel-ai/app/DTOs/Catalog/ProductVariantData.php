@@ -11,8 +11,7 @@ final readonly class ProductVariantData
         public ?string $price,
         public int $stock,
         public bool $isActive,
-    ) {
-    }
+    ) {}
 
     /**
      * @param  array{sku: string, size?: string|null, color?: string|null, price?: numeric-string|int|float|null, stock: int, is_active: bool}  $data

@@ -14,6 +14,7 @@ class OrderItem extends Model
 {
     /** @use HasFactory<OrderItemFactory> */
     use HasFactory;
+
     use HasUuids;
 
     /**
@@ -23,8 +24,8 @@ class OrderItem extends Model
     {
         return [
             'unit_price' => 'decimal:2',
-            'subtotal'   => 'decimal:2',
-            'quantity'   => 'integer',
+            'subtotal' => 'decimal:2',
+            'quantity' => 'integer',
         ];
     }
 

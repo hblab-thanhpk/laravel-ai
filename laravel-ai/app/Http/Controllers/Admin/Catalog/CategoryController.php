@@ -23,7 +23,7 @@ class CategoryController extends Controller
 
         return view('admin.categories.index', [
             'categories' => $categoryService->getTree($queryData->search, $queryData->isActive),
-            'filters'    => $queryData->toArray(),
+            'filters' => $queryData->toArray(),
             'isFiltered' => $queryData->isFiltered(),
         ]);
     }
@@ -54,7 +54,7 @@ class CategoryController extends Controller
     public function edit(Category $category, CategoryService $categoryService): View
     {
         return view('admin.categories.edit', [
-            'category'      => $category,
+            'category' => $category,
             'parentOptions' => $categoryService->allForParentSelect($category->id),
         ]);
     }

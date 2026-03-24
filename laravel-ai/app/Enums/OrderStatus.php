@@ -13,9 +13,9 @@ enum OrderStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Pending   => 'Chờ xử lý',
-            self::Paid      => 'Đã thanh toán',
-            self::Shipped   => 'Đang giao hàng',
+            self::Pending => 'Chờ xử lý',
+            self::Paid => 'Đã thanh toán',
+            self::Shipped => 'Đang giao hàng',
             self::Completed => 'Hoàn thành',
             self::Cancelled => 'Đã hủy',
         };
@@ -27,9 +27,9 @@ enum OrderStatus: string
     public function allowedTransitions(): array
     {
         return match ($this) {
-            self::Pending   => [self::Paid, self::Cancelled],
-            self::Paid      => [self::Shipped, self::Cancelled],
-            self::Shipped   => [self::Completed, self::Cancelled],
+            self::Pending => [self::Paid, self::Cancelled],
+            self::Paid => [self::Shipped, self::Cancelled],
+            self::Shipped => [self::Completed, self::Cancelled],
             self::Completed => [],
             self::Cancelled => [],
         };
@@ -48,9 +48,9 @@ enum OrderStatus: string
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Pending   => 'badge-warning',
-            self::Paid      => 'badge-info',
-            self::Shipped   => 'badge-primary',
+            self::Pending => 'badge-warning',
+            self::Paid => 'badge-info',
+            self::Shipped => 'badge-primary',
             self::Completed => 'badge-success',
             self::Cancelled => 'badge-danger',
         };

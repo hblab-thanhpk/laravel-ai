@@ -65,7 +65,7 @@ class OrderService
 
                 Log::info('order.cancelled_stock_restored', [
                     'order_id' => $order->id,
-                    'from'     => $currentStatus->value,
+                    'from' => $currentStatus->value,
                 ]);
             }
 

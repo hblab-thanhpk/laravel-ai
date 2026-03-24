@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\Product;
 
 use App\Models\Product;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -21,7 +22,7 @@ class UpdateProductRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -30,21 +31,21 @@ class UpdateProductRequest extends FormRequest
 
         return [
             'category_id' => ['nullable', 'uuid', Rule::exists('categories', 'id')],
-            'name'        => ['required', 'string', 'max:255'],
-            'slug'        => [
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => [
                 'required', 'string', 'max:255',
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
                 Rule::unique('products', 'slug')->ignore($product->getKey()),
             ],
-            'sku'         => [
+            'sku' => [
                 'required', 'string', 'max:64',
                 'regex:/^[A-Za-z0-9_-]+$/',
                 Rule::unique('products', 'sku')->ignore($product->getKey()),
             ],
-            'price'       => ['required', 'numeric', 'min:0'],
-            'stock'       => ['required', 'integer', 'min:0'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
             'description' => ['nullable', 'string', 'max:5000'],
-            'is_active'   => ['required', 'boolean'],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 
@@ -54,17 +55,17 @@ class UpdateProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'    => 'Tên sản phẩm là bắt buộc.',
-            'slug.required'    => 'Slug là bắt buộc.',
-            'slug.regex'       => 'Slug chỉ gồm chữ thường, số và dấu gạch ngang.',
-            'slug.unique'      => 'Slug đã tồn tại.',
-            'sku.required'     => 'SKU là bắt buộc.',
-            'sku.regex'        => 'SKU chỉ gồm chữ, số, dấu gạch ngang hoặc gạch dưới.',
-            'sku.unique'       => 'SKU đã tồn tại.',
-            'price.required'   => 'Giá sản phẩm là bắt buộc.',
-            'price.min'        => 'Giá không được âm.',
-            'stock.required'   => 'Tồn kho là bắt buộc.',
-            'stock.min'        => 'Tồn kho không được âm.',
+            'name.required' => 'Tên sản phẩm là bắt buộc.',
+            'slug.required' => 'Slug là bắt buộc.',
+            'slug.regex' => 'Slug chỉ gồm chữ thường, số và dấu gạch ngang.',
+            'slug.unique' => 'Slug đã tồn tại.',
+            'sku.required' => 'SKU là bắt buộc.',
+            'sku.regex' => 'SKU chỉ gồm chữ, số, dấu gạch ngang hoặc gạch dưới.',
+            'sku.unique' => 'SKU đã tồn tại.',
+            'price.required' => 'Giá sản phẩm là bắt buộc.',
+            'price.min' => 'Giá không được âm.',
+            'stock.required' => 'Tồn kho là bắt buộc.',
+            'stock.min' => 'Tồn kho không được âm.',
             'category_id.exists' => 'Danh mục không tồn tại.',
         ];
     }

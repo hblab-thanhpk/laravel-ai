@@ -28,9 +28,9 @@ return new class extends Migration
             $lft = ++$counter;
             $rgt = ++$counter;
             DB::table('categories')->where('id', $category->id)->update([
-                '_lft'       => $lft,
-                '_rgt'       => $rgt,
-                'depth'      => 0,
+                '_lft' => $lft,
+                '_rgt' => $rgt,
+                'depth' => 0,
                 'sort_order' => $i + 1,
             ]);
         }
