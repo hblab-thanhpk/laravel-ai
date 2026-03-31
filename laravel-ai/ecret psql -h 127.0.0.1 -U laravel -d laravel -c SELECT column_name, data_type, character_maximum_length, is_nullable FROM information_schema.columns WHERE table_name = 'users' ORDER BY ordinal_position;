@@ -1,0 +1,24 @@
+                                Table "public.users"
+      Column       |              Type              | Collation | Nullable | Default 
+-------------------+--------------------------------+-----------+----------+---------
+ id                | uuid                           |           | not null | 
+ name              | character varying(255)         |           | not null | 
+ email             | character varying(255)         |           | not null | 
+ email_verified_at | timestamp(0) without time zone |           |          | 
+ password          | character varying(255)         |           | not null | 
+ remember_token    | character varying(100)         |           |          | 
+ created_at        | timestamp(0) without time zone |           |          | 
+ updated_at        | timestamp(0) without time zone |           |          | 
+ is_admin          | boolean                        |           | not null | false
+ role_id           | uuid                           |           |          | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+    "users_email_unique" UNIQUE CONSTRAINT, btree (email)
+    "users_is_admin_index" btree (is_admin)
+    "users_role_id_index" btree (role_id)
+Foreign-key constraints:
+    "users_role_id_foreign" FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL
+Referenced by:
+    TABLE "carts" CONSTRAINT "carts_user_id_foreign" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    TABLE "orders" CONSTRAINT "orders_user_id_foreign" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+

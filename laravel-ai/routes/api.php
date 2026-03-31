@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +18,13 @@ Route::prefix('auth')->group(function (): void {
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function (): void {
     Route::apiResource('products', ProductController::class);
+
+    // Cart
+    Route::prefix('cart')->group(function (): void {
+        Route::get('/',               [CartController::class, 'index']);
+        Route::post('/items',         [CartController::class, 'addItem']);
+        Route::patch('/items/{cartItem}', [CartController::class, 'updateItem']);
+        Route::delete('/items/{cartItem}', [CartController::class, 'removeItem']);
+        Route::delete('/',            [CartController::class, 'clear']);
+    });
 });

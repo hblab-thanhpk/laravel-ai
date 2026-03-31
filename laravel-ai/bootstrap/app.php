@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\Cart\InsufficientStockException;
+use App\Exceptions\Cart\ProductInactiveException;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\PermissionMiddleware;
 use Illuminate\Auth\AuthenticationException;
@@ -44,6 +46,30 @@ return Application::configure(basePath: dirname(__DIR__))
                 'status' => 'error',
                 'message' => 'Dữ liệu không hợp lệ.',
                 'errors' => $exception->errors(),
+            ], 422);
+        });
+
+        $exceptions->render(function (InsufficientStockException $exception, Request $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+                'errors' => [],
+            ], 422);
+        });
+
+        $exceptions->render(function (ProductInactiveException $exception, Request $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+                'errors' => [],
             ], 422);
         });
     })->create();
