@@ -25,7 +25,7 @@ class AuthController extends Controller
 
         if ($authPayload === null) {
             return $this->errorResponse(
-                'Thông tin đăng nhập không chính xác.',
+                'Thông tin đăng nhập không chính xác!',
                 [
                     'email' => ['Thông tin đăng nhập không chính xác.'],
                 ],
